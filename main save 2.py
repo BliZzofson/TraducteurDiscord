@@ -44,31 +44,19 @@ async def on_message(message):
     source_lang = channels[message.channel.name]
     for channel_name, target_lang in channels.items():
         if channel_name != message.channel.name:
-            target_channel = discord.utils.get(message.guild.channels, name=channel_name)
+            target_channel = discord.utils.get(message.guild.channels,
+                                               name=channel_name)
             if target_channel:
                 try:
-                    # Préparer le message à envoyer
-                    formatted_message = f"**{message.author.name}**: "
-
-                    # Gérer le texte s'il existe
-                    if message.content:
-                        translated = translator.translate(message.content, src=source_lang, dest=target_lang).text
-                        formatted_message += translated
-                    else:
-                        formatted_message += "(Pas de texte)"  # Message par défaut si pas de contenu texte
-
-                    # Gérer les images (attachments)
-                    if message.attachments:
-                        # Envoyer le message avec les URLs des images
-                        attachment_urls = "\n".join([attachment.url for attachment in message.attachments])
-                        formatted_message += f"\n{attachment_urls}"
-
-                    # Envoyer le message au salon cible
+                    translated = translator.translate(message.content,
+                                                      src=source_lang,
+                                                      dest=target_lang).text
+                    formatted_message = f"**{message.author.name}**: {translated}"
                     await target_channel.send(formatted_message)
-
                 except Exception as e:
-                    logger.error(f"Erreur lors du traitement du message vers {target_lang} : {e}")
-                    await target_channel.send(f"Erreur : {e}")
+                    logger.error(
+                        f"Erreur de traduction vers {target_lang} : {e}")
+                    await target_channel.send(f"Erreur de traduction : {e}")
 
 # Configuration du serveur Flask
 app = Flask(__name__)
@@ -77,9 +65,10 @@ app = Flask(__name__)
 def home():
     return "Bot is running!"
 
+# Nouvelle route pour le keep-alive
 @app.route('/ping')
 def ping():
-    return "OK", 200  # Route keep-alive
+    return "OK", 200  # Réponse simple pour indiquer que le serveur est actif
 
 # Fonction pour lancer le bot Discord avec reconnexion en cas d'erreur
 def run_bot():
