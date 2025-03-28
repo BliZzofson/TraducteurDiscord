@@ -32,9 +32,11 @@ channels = {
     "general-kr": "ko"
 }
 
+
 @client.event
 async def on_ready():
     logger.info(f"Connecté en tant que {client.user}")
+
 
 @client.event
 async def on_message(message):
@@ -61,14 +63,11 @@ async def on_message(message):
 # Configuration du serveur Flask
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return "Bot is running!"
 
-# Nouvelle route pour le keep-alive
-@app.route('/ping')
-def ping():
-    return "OK", 200  # Réponse simple pour indiquer que le serveur est actif
 
 # Fonction pour lancer le bot Discord avec reconnexion en cas d'erreur
 def run_bot():
